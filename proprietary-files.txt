@@ -485,9 +485,9 @@ vendor/lib/libwvhidl.so|37333d17980282275805807bc648bf8516fd4143
 vendor/bin/gx_fpd
 vendor/lib64/hw/fingerprint.goodix.so:vendor/lib64/hw/fingerprint.msm8996.so
 vendor/lib64/hw/gxfingerprint.default.so
-vendor/lib64/libfp_client.so
+vendor/lib64/libfp_client.so|7a827ff5ef2dfcbf863846ed4d877ec30ac934f0
 vendor/lib64/libfpnav.so
-vendor/lib64/libfpservice.so
+vendor/lib64/libfpservice.so|833f8f76a256228229bed46467f6deee3e6a3a61
 
 # Gatekeeper
 vendor/lib64/hw/gatekeeper.msm8996.so
