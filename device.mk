@@ -295,7 +295,8 @@ PRODUCT_PACKAGES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    android.hardware.biometrics.fingerprint@2.0-service.axon7
+    android.hardware.biometrics.fingerprint@2.0-service-custom \
+    fingerprint.msm8996
 
 # Media
 PRODUCT_COPY_FILES += \
@@ -375,10 +376,6 @@ PRODUCT_PACKAGES += \
     rcs_service_aidl.xml \
     rcs_service_api \
     rcs_service_api.xml
-
-# Recovery
-PRODUCT_PACKAGES += \
-    librecovery_updater_axon7
 
 # RenderScript
 PRODUCT_PACKAGES += \

@@ -25,6 +25,8 @@
 #include <hidl/Status.h>
 #include <android/hardware/biometrics/fingerprint/2.1/IBiometricsFingerprint.h>
 
+extern bool is_goodix;
+
 namespace android {
 namespace hardware {
 namespace biometrics {
@@ -82,4 +84,3 @@ private:
 }  // namespace android
 
 #endif  // ANDROID_HARDWARE_BIOMETRICS_FINGERPRINT_V2_1_BIOMETRICSFINGERPRINT_H
-

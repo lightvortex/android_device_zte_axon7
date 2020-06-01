@@ -187,3 +187,7 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 # Voice assistant
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.opa.eligible_device=true
+    
+# Fingerprint
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.hardware.fingerprint=goodix

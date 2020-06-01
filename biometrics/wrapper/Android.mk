@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017-2018 The LineageOS Project
+# Copyright (C) 2017 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/havoc_axon7.mk
+LOCAL_PATH := $(call my-dir)
 
-COMMON_LUNCH_CHOICES := \
-    havoc_axon7-userdebug \
-    havoc_axon7-eng \
-    havoc_axon7-user
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := \
+    FingerprintWrapper.cpp
+
+LOCAL_SHARED_LIBRARIES := \
+    libhardware liblog
+
+LOCAL_MODULE_RELATIVE_PATH := hw
+LOCAL_MODULE := fingerprint.$(TARGET_BOARD_PLATFORM)
+LOCAL_MODULE_TAGS := optional
+
+include $(BUILD_SHARED_LIBRARY)
