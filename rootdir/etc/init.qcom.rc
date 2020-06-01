@@ -616,12 +616,6 @@ on property:init.svc.surfaceflinger=restarting
 
 on property:slpi.restart=1
     write /sys/kernel/debug/msm_subsys/slpi restart
-
-service gx_fpd /vendor/bin/gx_fpd
-    class late_start
-    user system
-    group system
-    writepid /dev/cpuset/system-background/tasks
     
 service goodix_script /vendor/bin/init.goodix.sh
     class late_start

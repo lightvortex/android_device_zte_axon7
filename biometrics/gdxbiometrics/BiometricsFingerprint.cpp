@@ -20,9 +20,12 @@
 #include <hardware/hardware.h>
 #include <hardware/fingerprint.h>
 #include "BiometricsFingerprint.h"
+#include <cutils/properties.h>
 
 #include <inttypes.h>
 #include <unistd.h>
+
+fingerprint_device_t* getWrapperService(fingerprint_notify_t);
 
 namespace android {
 namespace hardware {
@@ -31,6 +34,10 @@ namespace fingerprint {
 namespace V2_1 {
 namespace implementation {
 
+// Supported fingerprint HAL version
+static const uint16_t kVersion = HARDWARE_MODULE_API_VERSION(2, 0);
+static bool is_goodix = false;
+
 using RequestStatus =
         android::hardware::biometrics::fingerprint::V2_1::RequestStatus;
 
@@ -38,7 +45,16 @@ BiometricsFingerprint *BiometricsFingerprint::sInstance = nullptr;
 
 BiometricsFingerprint::BiometricsFingerprint() : mClientCallback(nullptr), mDevice(nullptr) {
     sInstance = this; // keep track of the most recent instance
-    mDevice = openHal();
+    char vend [PROPERTY_VALUE_MAX];
+    property_get("ro.boot.fpsensor", vend, NULL);
+
+    if (!strcmp(vend, "fpc")) {
+        is_goodix = false;
+        mDevice = openHal();
+    } else {
+        is_goodix = true;
+        mDevice = getWrapperService(BiometricsFingerprint::notify);
+    }
 
     if (!mDevice) {
         ALOGE("Can't open HAL module");
@@ -142,7 +158,6 @@ FingerprintAcquiredInfo BiometricsFingerprint::VendorAcquiredFilter(
 
 Return<uint64_t> BiometricsFingerprint::setNotify(
         const sp<IBiometricsFingerprintClientCallback>& clientCallback) {
-    std::lock_guard<std::mutex> lock(mClientCallbackMutex);
     mClientCallback = clientCallback;
     // This is here because HAL 2.1 doesn't have a way to propagate a
     // unique token for its driver. Subsequent versions should send a unique
@@ -171,16 +186,13 @@ Return<uint64_t> BiometricsFingerprint::getAuthenticatorId() {
 }
 
 Return<RequestStatus> BiometricsFingerprint::cancel() {
-      /* notify client on cancel hack */
-    int ret = mDevice->cancel(mDevice);
-    ALOG(LOG_VERBOSE, LOG_TAG, "cancel() %d\n", ret);
-    if (ret == 0) {
-        fingerprint_msg_t msg;
-        msg.type = FINGERPRINT_ERROR;
-        msg.data.error = FINGERPRINT_ERROR_CANCELED;
-        sInstance->notify(&msg);
-    }
-    return ErrorFilter(ret);
+
+    fingerprint_msg_t msg;
+    msg.type = FINGERPRINT_ERROR;
+    msg.data.error = FINGERPRINT_ERROR_CANCELED;
+    mDevice->notify(&msg);
+
+      return ErrorFilter(mDevice->cancel(mDevice));
 }
 
 #define MAX_FINGERPRINTS 100
@@ -223,7 +235,6 @@ Return<RequestStatus> BiometricsFingerprint::setActiveGroup(uint32_t gid,
         return RequestStatus::SYS_EINVAL;
     }
     int ret = mDevice->set_active_group(mDevice, gid, storePath.c_str());
-    /* set active group hack for goodix */
     if ((ret > 0) && is_goodix)
         ret = 0;
     return ErrorFilter(ret);
@@ -269,6 +280,12 @@ fingerprint_device_t* BiometricsFingerprint::openHal() {
         return nullptr;
     }
 
+    if (kVersion != device->version) {
+        // enforce version on new devices because of HIDL@2.1 translation layer
+        ALOGE("Wrong fp version. Expected %d, got %d", kVersion, device->version);
+        return nullptr;
+    }
+
     fingerprint_device_t* fp_device =
         reinterpret_cast<fingerprint_device_t*>(device);
 
@@ -284,7 +301,6 @@ fingerprint_device_t* BiometricsFingerprint::openHal() {
 void BiometricsFingerprint::notify(const fingerprint_msg_t *msg) {
     BiometricsFingerprint* thisPtr = static_cast<BiometricsFingerprint*>(
             BiometricsFingerprint::getInstance());
-    std::lock_guard<std::mutex> lock(thisPtr->mClientCallbackMutex);
     if (thisPtr == nullptr || thisPtr->mClientCallback == nullptr) {
         ALOGE("Receiving callbacks before the client callback is registered.");
         return;
@@ -352,7 +368,7 @@ void BiometricsFingerprint::notify(const fingerprint_msg_t *msg) {
     }
 }
 
-}  // namespace implementation
+} // namespace implementation
 }  // namespace V2_1
 }  // namespace fingerprint
 }  // namespace biometrics

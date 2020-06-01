@@ -61,6 +61,8 @@ function blob_fixup() {
     vendor/lib64/vendor.qti.gnss@1.0_vendor.so)
         patchelf --replace-needed "android.hardware.gnss@1.0.so" "android.hardware.gnss@1.0-v27.so" "${2}"
         ;;
+    vendor/lib64/hw/gffingerprint.default.so)    
+    patchelf --replace-needed "libsoftkeymaster.so" "libsoftkeymasterdevice.so" "${2}"
     esac
 }
 
