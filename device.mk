@@ -295,8 +295,8 @@ PRODUCT_PACKAGES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    android.hardware.biometrics.fingerprint@2.0-service-custom \
-    fingerprint.goodixS
+    android.hardware.biometrics.fingerprint@2.1-service.axon7 \
+    fingerprint.goodix
 
 # Media
 PRODUCT_COPY_FILES += \
