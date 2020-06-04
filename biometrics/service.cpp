@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "android.hardware.biometrics.fingerprint@2.1-service"
+#define LOG_TAG "fingerprint@2.1-service.axon7"
 
 #include <android/log.h>
+#include <binder/ProcessState.h>
+#include <cutils/properties.h>
 #include <hidl/HidlSupport.h>
 #include <hidl/HidlTransportSupport.h>
 #include <android/hardware/biometrics/fingerprint/2.1/IBiometricsFingerprint.h>
@@ -29,13 +31,33 @@ using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
 using android::sp;
 
+bool is_goodix = false;
+
 int main() {
+    char vend[PROPERTY_VALUE_MAX];
+    property_get("ro.hardware.fingerprint", vend, "none");
+    if (!strcmp(vend, "none")) {
+        ALOGE("ro.hardware.fingerprint not set! Killing " LOG_TAG " binder service!");
+        return 1;
+    } else if (!strcmp(vend, "goodix")) {
+        ALOGI("is_goodix = true");
+        is_goodix = true;
+    }
+
     android::sp<IBiometricsFingerprint> bio = BiometricsFingerprint::getInstance();
+
+    if (is_goodix) {
+        // the conventional HAL might start binder services
+        android::ProcessState::initWithDriver("/dev/binder");
+        android::ProcessState::self()->startThreadPool();
+    }
 
     configureRpcThreadpool(1, true /*callerWillJoin*/);
 
     if (bio != nullptr) {
-        bio->registerAsService();
+        if (::android::OK != bio->registerAsService()) {
+            return 1;
+        }
     } else {
         ALOGE("Can't create instance of BiometricsFingerprint, nullptr");
     }
