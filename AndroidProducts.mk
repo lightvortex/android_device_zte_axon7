@@ -14,9 +14,9 @@
 # limitations under the License.
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/havoc_axon7.mk
+    $(LOCAL_DIR)/lineage_axon7.mk
 
 COMMON_LUNCH_CHOICES := \
-    havoc_axon7-userdebug \
-    havoc_axon7-eng \
-    havoc_axon7-user
+    lineage_axon7-userdebug \
+    lineage_axon7-eng \
+    lineage_axon7-user
