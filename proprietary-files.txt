@@ -488,7 +488,8 @@ vendor/lib64/hw/gxfingerprint.default.so
 vendor/lib64/libfp_client.so|7a827ff5ef2dfcbf863846ed4d877ec30ac934f0
 vendor/lib64/libfpnav.so
 vendor/lib64/libfpservice.so|833f8f76a256228229bed46467f6deee3e6a3a61
-vendor/lib64/libbindergx.so|eb676b92d13a7835aaab309d5c692151993e016f
+vendor/bin/hw/android.hardware.biometrics.fingerprint@2.1-service
+vendor/etc/init/android.hardware.biometrics.fingerprint@2.1-service.rc
 
 # Gatekeeper
 vendor/lib64/hw/gatekeeper.msm8996.so

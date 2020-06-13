@@ -61,18 +61,6 @@ function blob_fixup() {
     vendor/lib64/vendor.qti.gnss@1.0_vendor.so)
         patchelf --replace-needed "android.hardware.gnss@1.0.so" "android.hardware.gnss@1.0-v27.so" "${2}"
         ;;
-    vendor/bin/gx_fpd)
-        patchelf --replace-needed "libbinder.so" "libbindergx.so" "${2}"
-        ;;
-    vendor/lib64/hw/fingerprint.msm8996.so)
-        patchelf --replace-needed "libbinder.so" "libbindergx.so" "${2}"
-        ;;
-    vendor/lib64/libfp_client.so)
-        patchelf --replace-needed "libbinder.so" "libbindergx.so" "${2}"
-        ;;
-    vendor/lib64/libfpservice.so)
-        patchelf --replace-needed "libbinder.so" "libbindergx.so" "${2}"
-        ;;
     esac
 }
 
