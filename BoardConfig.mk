@@ -127,6 +127,8 @@ QCOM_BT_USE_SMD_TTY := true
 
 # Camera
 TARGET_USES_MEDIA_EXTENSIONS := true
+TARGET_PROCESS_SDK_VERSION_OVERRIDE += \
+    /vendor/bin/mm-qcamera-daemon=26
 TARGET_USES_QTI_CAMERA_DEVICE := true
 
 # Charger
