@@ -201,6 +201,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     ZteDoze
 
+# Fingerprint
+PRODUCT_PACKAGES += \
+    libunwind
+    
 # Flip Cover App
 PRODUCT_PACKAGES += \
     FlipFlap
